@@ -6,38 +6,176 @@
     <title>Divyanshu Gupta - AI Voice Bot</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            background-attachment: fixed;
+        }
+
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .glass-dark {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
         @keyframes pulse-ring {
             0% { transform: scale(1); opacity: 1; }
             100% { transform: scale(1.5); opacity: 0; }
         }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -1000px 0; }
+            100% { background-position: 1000px 0; }
+        }
+
         .pulse-ring {
             animation: pulse-ring 1.5s infinite;
         }
+
         .message-enter {
-            animation: slideIn 0.3s ease-out;
+            animation: slideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+
+        .float-animation {
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .button-glow {
+            box-shadow: 0 0 20px rgba(102, 126, 234, 0.5);
+            transition: all 0.3s ease;
+        }
+
+        .button-glow:hover {
+            box-shadow: 0 0 30px rgba(102, 126, 234, 0.8);
+            transform: translateY(-2px);
+        }
+
+        .message-user {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .message-bot {
+            background: white;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        .avatar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .status-indicator {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .typing-indicator span {
+            animation: typing 1.4s infinite;
+        }
+
+        .typing-indicator span:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .typing-indicator span:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes typing {
+            0%, 60%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-10px); }
+        }
+
+        .mic-active {
+            animation: pulse-scale 1s infinite;
+        }
+
+        @keyframes pulse-scale {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
         }
     </style>
 </head>
-<body class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen">
-    <div id="app" class="flex flex-col h-screen max-w-6xl mx-auto">
+<body class="min-h-screen flex items-center justify-center p-4">
+    <!-- Main Container -->
+    <div class="w-full max-w-5xl h-[90vh] flex flex-col glass-effect rounded-3xl overflow-hidden shadow-2xl">
+        
         <!-- Header -->
-        <div class="bg-white shadow-lg p-6 flex items-center justify-between">
-            <div>
-                <h1 class="text-3xl font-bold text-gray-800">Divyanshu Gupta</h1>
-                <p class="text-sm text-gray-600">Data Scientist | AI/ML Engineer | VIT Bhopal</p>
-                <div class="flex gap-3 mt-2">
-                    <a href="https://github.com/divyanshugupta068" target="_blank" class="text-xs text-blue-600 hover:underline">GitHub</a>
-                    <a href="https://linkedin.com/in/divyanshugupta068" target="_blank" class="text-xs text-blue-600 hover:underline">LinkedIn</a>
-                    <span class="text-xs text-gray-500">divyanshugupta068@gmail.com</span>
-                </div>
+        <div class="relative bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-600 p-8 text-white">
+            <div class="absolute top-0 left-0 w-full h-full opacity-20">
+                <div class="absolute top-4 left-4 w-32 h-32 bg-white rounded-full blur-3xl"></div>
+                <div class="absolute bottom-4 right-4 w-40 h-40 bg-pink-300 rounded-full blur-3xl"></div>
             </div>
-            <div class="flex gap-2">
-                <button id="voiceToggle" class="p-3 rounded-full bg-green-500 text-white hover:bg-green-600 transition-all shadow-lg">
-                    <svg id="voiceIcon" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            
+            <div class="relative flex items-center justify-between">
+                <div class="flex items-center gap-6">
+                    <div class="avatar w-20 h-20 rounded-2xl flex items-center justify-center text-3xl font-bold float-animation">
+                        DG
+                    </div>
+                    <div>
+                        <h1 class="text-3xl font-bold mb-1">Divyanshu Gupta</h1>
+                        <p class="text-blue-100 text-sm font-medium mb-2">Data Scientist | AI/ML Engineer</p>
+                        <div class="flex gap-4 text-xs">
+                            <a href="https://github.com/divyanshugupta068" target="_blank" class="hover:text-blue-200 transition-colors flex items-center gap-1">
+                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+                                GitHub
+                            </a>
+                            <a href="https://linkedin.com/in/divyanshugupta068" target="_blank" class="hover:text-blue-200 transition-colors flex items-center gap-1">
+                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                                LinkedIn
+                            </a>
+                            <span class="flex items-center gap-1">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                                divyanshugupta068@gmail.com
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                
+                <button id="voiceToggle" class="p-4 rounded-2xl bg-white bg-opacity-20 hover:bg-opacity-30 backdrop-blur-lg transition-all shadow-lg">
+                    <svg id="voiceIcon" class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path>
                     </svg>
                 </button>
@@ -45,34 +183,42 @@
         </div>
 
         <!-- Messages Container -->
-        <div id="messages" class="flex-1 overflow-y-auto p-6 space-y-4">
+        <div id="messages" class="flex-1 overflow-y-auto p-6 space-y-4 scrollbar-hide bg-gradient-to-b from-purple-50 to-blue-50">
             <!-- Messages will be added here -->
         </div>
 
         <!-- Input Area -->
-        <div class="bg-white border-t shadow-lg p-4">
-            <div class="flex items-center space-x-3 max-w-4xl mx-auto">
-                <button id="micButton" class="relative p-4 rounded-full bg-blue-500 text-white hover:bg-blue-600 transition-all shadow-lg">
-                    <svg id="micIcon" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div class="glass-effect border-t border-gray-200 p-6">
+            <div class="flex items-end gap-3 max-w-4xl mx-auto">
+                <button id="micButton" class="relative p-5 rounded-2xl bg-gradient-to-br from-purple-500 to-indigo-600 text-white hover:from-purple-600 hover:to-indigo-700 transition-all shadow-lg button-glow flex-shrink-0">
+                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path>
                     </svg>
-                    <div id="pulseRing" class="hidden absolute inset-0 rounded-full bg-red-500 pulse-ring"></div>
+                    <div id="pulseRing" class="hidden absolute inset-0 rounded-2xl bg-red-500 pulse-ring opacity-75"></div>
                 </button>
-                <input 
-                    id="textInput" 
-                    type="text" 
-                    placeholder="Type your question or click the mic to speak..."
-                    class="flex-1 p-4 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                />
-                <button id="sendButton" class="p-4 rounded-full bg-blue-500 text-white hover:bg-blue-600 transition-all shadow-lg">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
-                    </svg>
-                </button>
+                
+                <div class="flex-1 relative">
+                    <textarea 
+                        id="textInput" 
+                        rows="1"
+                        placeholder="Ask me anything about my background, skills, or experience..."
+                        class="w-full p-4 pr-12 border-2 border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none transition-all shadow-sm"
+                        style="min-height: 56px; max-height: 120px;"
+                    ></textarea>
+                    <button id="sendButton" class="absolute right-2 bottom-2 p-3 rounded-xl bg-gradient-to-br from-purple-500 to-indigo-600 text-white hover:from-purple-600 hover:to-indigo-700 transition-all shadow-md">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+                        </svg>
+                    </button>
+                </div>
             </div>
-            <p id="statusText" class="text-xs text-center text-gray-500 mt-3">
-                Click the mic to speak or type your question
-            </p>
+            
+            <div class="flex items-center justify-center gap-2 mt-4">
+                <div id="statusIndicator" class="w-2 h-2 rounded-full bg-green-500 status-indicator"></div>
+                <p id="statusText" class="text-sm text-gray-600 font-medium">
+                    Ready to chat • Click mic or type your question
+                </p>
+            </div>
         </div>
     </div>
 
@@ -91,17 +237,27 @@
         const sendButton = document.getElementById('sendButton');
         const voiceToggle = document.getElementById('voiceToggle');
         const statusText = document.getElementById('statusText');
+        const statusIndicator = document.getElementById('statusIndicator');
         const pulseRing = document.getElementById('pulseRing');
-        const micIcon = document.getElementById('micIcon');
         const voiceIcon = document.getElementById('voiceIcon');
+
+        // Auto-resize textarea
+        textInput.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+        });
 
         // Intelligent response system
         function getSmartResponse(query) {
             const lowerQuery = query.toLowerCase();
 
             if (lowerQuery.match(/life story|background|about you|who are you|tell me about yourself|introduce/i)) {
-                return "I'm a Data Scientist from Bhopal studying Computer Science at VIT. I got hooked on AI during college and dove deep into ML and Deep Learning. Last summer, I interned at Codiant where I built production AI systems serving thousands of users daily. Now I'm focused on building intelligent applications that solve real problems - from medical document processing to conversational AI recommenders.";
+                return "I'm a Data Scientist from Indore studying Computer Science at VIT. I got hooked on AI during college and dove deep into ML and Deep Learning. Last summer, I interned at Codiant where I built production AI systems serving thousands of users daily. Now I'm focused on building intelligent applications that solve real problems - from medical document processing to conversational AI recommenders.";
             }
+        }
+    </script>
+</body>
+</html>
 
             if (lowerQuery.match(/superpower|strength|best at|good at|excel at|talent/i)) {
                 return "My number one superpower is turning complex AI concepts into working products. I don't just build models - I ship complete systems with APIs, databases, and frontends that people actually use. I can take something from research paper to production deployment.";
@@ -171,18 +327,21 @@
             recognition.onerror = (event) => {
                 console.error('Speech recognition error:', event.error);
                 setListening(false);
-                statusText.textContent = 'Speech recognition error. Please try again.';
+                updateStatus('error', 'Speech error - please try again');
             };
         }
 
         // Add welcome message
-        addMessage('bot', "Hi! I'm Divyanshu's AI voice bot. Ask me about my background, skills, projects, or anything else! You can type or use the microphone.");
+        addMessage('bot', "👋 Hi! I'm Divyanshu's AI assistant. Ask me about my background, skills, projects, or anything else! You can type or use voice.");
 
         // Event Listeners
         micButton.addEventListener('click', toggleListening);
         sendButton.addEventListener('click', () => handleSend());
         textInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') handleSend();
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                handleSend();
+            }
         });
         voiceToggle.addEventListener('click', toggleVoice);
 
@@ -190,11 +349,30 @@
             const messageDiv = document.createElement('div');
             messageDiv.className = 'flex ' + (type === 'user' ? 'justify-end' : 'justify-start') + ' message-enter';
             
+            const wrapper = document.createElement('div');
+            wrapper.className = 'flex items-end gap-2 max-w-xl md:max-w-2xl';
+            
+            if (type === 'bot') {
+                const avatar = document.createElement('div');
+                avatar.className = 'avatar w-10 h-10 rounded-xl flex items-center justify-center text-white text-sm font-bold flex-shrink-0';
+                avatar.textContent = 'DG';
+                wrapper.appendChild(avatar);
+            }
+            
             const contentDiv = document.createElement('div');
-            contentDiv.className = 'max-w-xs md:max-w-md lg:max-w-2xl p-4 rounded-lg ' + (type === 'user' ? 'bg-blue-500 text-white' : 'bg-white text-gray-800 shadow-md');
+            contentDiv.className = 'p-4 rounded-2xl ' + (type === 'user' ? 'message-user text-white rounded-br-md' : 'message-bot text-gray-800 rounded-bl-md');
             contentDiv.textContent = text;
             
-            messageDiv.appendChild(contentDiv);
+            wrapper.appendChild(contentDiv);
+            
+            if (type === 'user') {
+                const avatar = document.createElement('div');
+                avatar.className = 'w-10 h-10 rounded-xl flex items-center justify-center bg-gradient-to-br from-blue-500 to-purple-500 text-white text-sm font-bold flex-shrink-0';
+                avatar.textContent = 'YOU';
+                wrapper.appendChild(avatar);
+            }
+            
+            messageDiv.appendChild(wrapper);
             messagesContainer.appendChild(messageDiv);
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
         }
@@ -204,11 +382,20 @@
             messageDiv.id = 'loadingMessage';
             messageDiv.className = 'flex justify-start message-enter';
             
-            const contentDiv = document.createElement('div');
-            contentDiv.className = 'bg-white text-gray-800 shadow-md p-4 rounded-lg flex items-center space-x-2';
-            contentDiv.innerHTML = '<div class="flex space-x-1"><div class="w-2 h-2 bg-blue-500 rounded-full animate-bounce"></div><div class="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style="animation-delay: 0.1s"></div><div class="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style="animation-delay: 0.2s"></div></div><span class="text-sm text-gray-600">Thinking...</span>';
+            const wrapper = document.createElement('div');
+            wrapper.className = 'flex items-end gap-2';
             
-            messageDiv.appendChild(contentDiv);
+            const avatar = document.createElement('div');
+            avatar.className = 'avatar w-10 h-10 rounded-xl flex items-center justify-center text-white text-sm font-bold flex-shrink-0';
+            avatar.textContent = 'DG';
+            wrapper.appendChild(avatar);
+            
+            const contentDiv = document.createElement('div');
+            contentDiv.className = 'message-bot p-4 rounded-2xl rounded-bl-md flex items-center gap-2';
+            contentDiv.innerHTML = '<div class="typing-indicator flex gap-1"><span class="w-2 h-2 bg-purple-500 rounded-full"></span><span class="w-2 h-2 bg-purple-500 rounded-full"></span><span class="w-2 h-2 bg-purple-500 rounded-full"></span></div><span class="text-sm text-gray-600 ml-2">Thinking...</span>';
+            
+            wrapper.appendChild(contentDiv);
+            messageDiv.appendChild(wrapper);
             messagesContainer.appendChild(messageDiv);
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
         }
@@ -218,19 +405,30 @@
             if (loading) loading.remove();
         }
 
+        function updateStatus(type, message) {
+            statusText.textContent = message;
+            statusIndicator.className = 'w-2 h-2 rounded-full ' + 
+                (type === 'listening' ? 'bg-red-500 animate-pulse' : 
+                 type === 'speaking' ? 'bg-blue-500 animate-pulse' : 
+                 type === 'error' ? 'bg-yellow-500' : 'bg-green-500 status-indicator');
+        }
+
         async function handleSend() {
             const message = textInput.value.trim();
             if (!message) return;
 
             addMessage('user', message);
             textInput.value = '';
+            textInput.style.height = 'auto';
 
             addLoadingMessage();
+            updateStatus('processing', 'Processing your question...');
 
             setTimeout(() => {
                 const response = getSmartResponse(message);
                 removeLoadingMessage();
                 addMessage('bot', response);
+                updateStatus('ready', 'Ready to chat • Click mic or type your question');
 
                 if (voiceEnabled) {
                     speak(response);
@@ -250,17 +448,17 @@
 
             utterance.onstart = () => {
                 isSpeaking = true;
-                statusText.textContent = '🔊 Speaking...';
+                updateStatus('speaking', '🔊 Speaking...');
             };
 
             utterance.onend = () => {
                 isSpeaking = false;
-                statusText.textContent = 'Click the mic to speak or type your question';
+                updateStatus('ready', 'Ready to chat • Click mic or type your question');
             };
 
             utterance.onerror = () => {
                 isSpeaking = false;
-                statusText.textContent = 'Click the mic to speak or type your question';
+                updateStatus('ready', 'Ready to chat • Click mic or type your question');
             };
 
             synthesis.speak(utterance);
@@ -283,15 +481,15 @@
         function setListening(state) {
             isListening = state;
             if (state) {
-                micButton.classList.add('bg-red-500');
-                micButton.classList.remove('bg-blue-500');
+                micButton.classList.add('bg-gradient-to-br', 'from-red-500', 'to-red-600', 'mic-active');
+                micButton.classList.remove('from-purple-500', 'to-indigo-600');
                 pulseRing.classList.remove('hidden');
-                statusText.textContent = '🎤 Listening... Speak now!';
+                updateStatus('listening', '🎤 Listening... Speak now!');
             } else {
-                micButton.classList.remove('bg-red-500');
-                micButton.classList.add('bg-blue-500');
+                micButton.classList.remove('bg-gradient-to-br', 'from-red-500', 'to-red-600', 'mic-active');
+                micButton.classList.add('from-purple-500', 'to-indigo-600');
                 pulseRing.classList.add('hidden');
-                statusText.textContent = 'Click the mic to speak or type your question';
+                updateStatus('ready', 'Ready to chat • Click mic or type your question');
             }
         }
 
@@ -302,15 +500,13 @@
                 isSpeaking = false;
             }
             
-            voiceToggle.classList.toggle('bg-green-500');
-            voiceToggle.classList.toggle('bg-gray-400');
+            voiceToggle.classList.toggle('bg-white');
+            voiceToggle.classList.toggle('bg-opacity-20');
+            voiceToggle.classList.toggle('bg-red-500');
+            voiceToggle.classList.toggle('bg-opacity-80');
             
             if (voiceEnabled) {
                 voiceIcon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path>';
+                updateStatus('ready', 'Voice enabled • Ready to chat');
             } else {
                 voiceIcon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2"></path>';
-            }
-        }
-    </script>
-</body>
-</html>
