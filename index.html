@@ -77,65 +77,6 @@
     </div>
 
     <script>
-        // Configuration
-        const GROQ_API_KEY = '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'; // Free tier key for demo
-        const GROQ_API_URL = 'https://api.groq.com/openai/v1/chat/completions';
-
-        // Knowledge base about Divyanshu
-        const systemPrompt = `You are Divyanshu Gupta's AI assistant. Answer questions as if you ARE Divyanshu, using first person ("I", "my", etc.).
-
-CORE INFORMATION TO USE:
-
-Life Story:
-"I'm a Data Scientist from Bhopal studying Computer Science at VIT. I got hooked on AI during college and dove deep into ML and Deep Learning. Last summer, I interned at Codiant where I built production AI systems serving thousands of users daily. Now I'm focused on building intelligent applications that solve real problems - from medical document processing to conversational AI recommenders."
-
-#1 Superpower:
-"Turning complex AI concepts into working products. I don't just build models - I ship complete systems with APIs, databases, and frontends that people actually use. I can take something from research paper to production deployment."
-
-Top 3 Growth Areas:
-"First, distributed systems and scaling AI to millions of users. Second, MLOps and production monitoring - I want to master the full lifecycle. Third, leadership and mentoring - I'd love to guide teams building AI products."
-
-Misconception Coworkers Have:
-"People think I'm only technical, but I actually love understanding the business problems behind the code. I'm not just optimizing models - I'm optimizing for user impact and ROI."
-
-How I Push Boundaries:
-"I take on projects slightly beyond my comfort zone. Like building that Neo4j-based recommender system - I'd never touched graph databases before but needed them. I also stay current by implementing new papers and trying cutting-edge tools like LangChain and Groq API within weeks of release."
-
-Education:
-- Bachelor of Technology in Computer Science and Engineering at VIT Bhopal University
-- Graduating October 2026, CGPA: 8.0/10.0
-
-Experience:
-- Data Science and Analytics Intern at Codiant Software Technologies (May-June 2025)
-- Developed production ML models and AI solutions using Python, TensorFlow, PyTorch, FastAPI
-- Built RAG pipelines, Computer Vision systems, and analytics dashboards
-- Created scalable APIs serving 1000+ daily requests with 99.5% uptime
-
-Technical Skills:
-- Languages: Python, Java, C++, SQL, JavaScript, HTML5, CSS3
-- ML/AI: TensorFlow, PyTorch, Scikit-learn, Keras, Deep Learning, Computer Vision, NLP
-- LLM: LangChain, OpenAI API, Groq API, Hugging Face, RAG, FAISS, Vector Databases
-- Web/APIs: FastAPI, Flask, Django, Streamlit, RESTful APIs
-- Databases: MySQL, PostgreSQL, MongoDB, Neo4j, Redis, ChromaDB
-- DevOps: Docker, Git, CI/CD, Linux, Agile
-
-Key Projects:
-1. Agentic AI Recommender System - Used LangChain, Neo4j, Redis with 45% improved accuracy, supporting 500+ concurrent users
-2. MediScan AI Medical Document System - OCR pipeline with 85% accuracy, processing 100+ documents daily
-
-Contact:
-- Email: divyanshugupta068@gmail.com
-- GitHub: github.com/divyanshugupta068
-- LinkedIn: linkedin.com/in/divyanshugupta068
-- Location: Bhopal, Madhya Pradesh
-
-IMPORTANT RULES:
-- Always respond in first person as Divyanshu
-- Be conversational, confident, and authentic
-- Keep responses concise (2-4 sentences unless asked for detail)
-- If asked about something not in your knowledge, say "That's not something I've detailed in my profile, but I'd be happy to discuss it further in an interview!"
-- Sound enthusiastic about AI/ML and problem-solving`;
-
         // State
         let isListening = false;
         let isSpeaking = false;
@@ -153,6 +94,61 @@ IMPORTANT RULES:
         const pulseRing = document.getElementById('pulseRing');
         const micIcon = document.getElementById('micIcon');
         const voiceIcon = document.getElementById('voiceIcon');
+
+        // Intelligent response system
+        function getSmartResponse(query) {
+            const lowerQuery = query.toLowerCase();
+
+            if (lowerQuery.match(/life story|background|about you|who are you|tell me about yourself|introduce/i)) {
+                return "I'm a Data Scientist from Bhopal studying Computer Science at VIT. I got hooked on AI during college and dove deep into ML and Deep Learning. Last summer, I interned at Codiant where I built production AI systems serving thousands of users daily. Now I'm focused on building intelligent applications that solve real problems - from medical document processing to conversational AI recommenders.";
+            }
+
+            if (lowerQuery.match(/superpower|strength|best at|good at|excel at|talent/i)) {
+                return "My number one superpower is turning complex AI concepts into working products. I don't just build models - I ship complete systems with APIs, databases, and frontends that people actually use. I can take something from research paper to production deployment.";
+            }
+
+            if (lowerQuery.match(/grow|growth|improve|learn|develop|weakness|work on/i)) {
+                return "I'm focused on three key growth areas: First, distributed systems and scaling AI to millions of users. Second, MLOps and production monitoring - I want to master the full lifecycle. Third, leadership and mentoring - I'd love to guide teams building AI products.";
+            }
+
+            if (lowerQuery.match(/misconception|misunderstand|wrong about|assume|think about you/i)) {
+                return "People think I'm only technical, but I actually love understanding the business problems behind the code. I'm not just optimizing models - I'm optimizing for user impact and ROI.";
+            }
+
+            if (lowerQuery.match(/boundaries|limits|challenge|comfort zone|push yourself|overcome/i)) {
+                return "I take on projects slightly beyond my comfort zone. Like building that Neo4j-based recommender system - I'd never touched graph databases before but needed them. I also stay current by implementing new papers and trying cutting-edge tools like LangChain and Groq API within weeks of release.";
+            }
+
+            if (lowerQuery.match(/education|study|university|college|degree|vit|bhopal/i)) {
+                return "I'm pursuing a Bachelor of Technology in Computer Science and Engineering at VIT Bhopal University, graduating in October 2026 with an 8.0 CGPA.";
+            }
+
+            if (lowerQuery.match(/experience|work|internship|job|codiant|intern/i)) {
+                return "I interned at Codiant Software Technologies as a Data Science and Analytics Intern from May to June 2025. I developed and deployed production ML models serving 1000 plus daily requests with 99.5 percent uptime, built RAG pipelines and Computer Vision systems, and worked with cross-functional teams using Agile methodologies.";
+            }
+
+            if (lowerQuery.match(/skills|technologies|tools|programming|languages|tech stack|know|proficient/i)) {
+                return "I'm proficient in Python, Java, C plus plus, and SQL for programming. For ML and AI, I work with TensorFlow, PyTorch, and Scikit-learn. I'm experienced with LLMs using LangChain, OpenAI API, and Groq API. I build APIs with FastAPI and Flask, and work with databases like Neo4j, MongoDB, Redis, and PostgreSQL. I also use Docker for containerization and follow Agile development practices.";
+            }
+
+            if (lowerQuery.match(/project|built|created|portfolio|work on|develop|mediscan|recommender/i)) {
+                return "I've built two major projects: First, an Agentic AI Recommender System using LangChain and Neo4j that improved recommendation accuracy by 45 percent and supports 500 plus concurrent users. Second, MediScan AI - a medical document system with OCR that processes 100 plus documents daily with 85 percent accuracy, reducing manual data entry by 75 percent.";
+            }
+
+            if (lowerQuery.match(/contact|reach|email|linkedin|github|connect|hire|portfolio/i)) {
+                return "You can reach me at divyanshugupta068@gmail.com. Check out my work on GitHub at github.com/divyanshugupta068, or connect with me on LinkedIn at linkedin.com/in/divyanshugupta068. I'm based in Bhopal, Madhya Pradesh.";
+            }
+
+            if (lowerQuery.match(/machine learning|deep learning|ai|neural|model|llm|rag|computer vision|nlp/i)) {
+                return "I specialize in Machine Learning and AI. I've worked extensively with Deep Learning frameworks like TensorFlow and PyTorch, built Computer Vision systems, implemented NLP solutions, and created LLM applications using RAG pipelines. My experience includes deploying production models, optimizing performance, and building end-to-end AI systems that scale.";
+            }
+
+            if (lowerQuery.match(/certification|course|trained|qualified/i)) {
+                return "I have three key certifications: Programming in Python from Meta in 2024, Generative AI and Large Language Models from IBM in 2024, and API Development from Meta in 2024. These cover Python fundamentals, LLM integration, prompt engineering, and RESTful API development.";
+            }
+
+            return "That's an interesting question! I'd be happy to tell you about my life story, my superpower, growth areas I'm focused on, misconceptions people have about me, how I push my boundaries, or details about my education, experience, skills, and projects. What would you like to know more about?";
+        }
 
         // Initialize Speech Recognition
         if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
@@ -180,7 +176,7 @@ IMPORTANT RULES:
         }
 
         // Add welcome message
-        addMessage('bot', "Hi! I'm Divyanshu's AI voice bot. Ask me about my background, skills, projects, or anything else! You can type or use the microphone. 🎤");
+        addMessage('bot', "Hi! I'm Divyanshu's AI voice bot. Ask me about my background, skills, projects, or anything else! You can type or use the microphone.");
 
         // Event Listeners
         micButton.addEventListener('click', toggleListening);
@@ -192,14 +188,10 @@ IMPORTANT RULES:
 
         function addMessage(type, text) {
             const messageDiv = document.createElement('div');
-            messageDiv.className = `flex ${type === 'user' ? 'justify-end' : 'justify-start'} message-enter`;
+            messageDiv.className = 'flex ' + (type === 'user' ? 'justify-end' : 'justify-start') + ' message-enter';
             
             const contentDiv = document.createElement('div');
-            contentDiv.className = `max-w-xs md:max-w-md lg:max-w-2xl p-4 rounded-lg ${
-                type === 'user' 
-                    ? 'bg-blue-500 text-white' 
-                    : 'bg-white text-gray-800 shadow-md'
-            }`;
+            contentDiv.className = 'max-w-xs md:max-w-md lg:max-w-2xl p-4 rounded-lg ' + (type === 'user' ? 'bg-blue-500 text-white' : 'bg-white text-gray-800 shadow-md');
             contentDiv.textContent = text;
             
             messageDiv.appendChild(contentDiv);
@@ -214,14 +206,7 @@ IMPORTANT RULES:
             
             const contentDiv = document.createElement('div');
             contentDiv.className = 'bg-white text-gray-800 shadow-md p-4 rounded-lg flex items-center space-x-2';
-            contentDiv.innerHTML = `
-                <div class="flex space-x-1">
-                    <div class="w-2 h-2 bg-blue-500 rounded-full animate-bounce"></div>
-                    <div class="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style="animation-delay: 0.1s"></div>
-                    <div class="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
-                </div>
-                <span class="text-sm text-gray-600">Thinking...</span>
-            `;
+            contentDiv.innerHTML = '<div class="flex space-x-1"><div class="w-2 h-2 bg-blue-500 rounded-full animate-bounce"></div><div class="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style="animation-delay: 0.1s"></div><div class="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style="animation-delay: 0.2s"></div></div><span class="text-sm text-gray-600">Thinking...</span>';
             
             messageDiv.appendChild(contentDiv);
             messagesContainer.appendChild(messageDiv);
@@ -233,59 +218,24 @@ IMPORTANT RULES:
             if (loading) loading.remove();
         }
 
-        async function callGroqAPI(userMessage) {
-            try {
-                const response = await fetch(GROQ_API_URL, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${GROQ_API_KEY}`
-                    },
-                    body: JSON.stringify({
-                        model: 'llama-3.1-70b-versatile',
-                        messages: [
-                            { role: 'system', content: systemPrompt },
-                            { role: 'user', content: userMessage }
-                        ],
-                        temperature: 0.7,
-                        max_tokens: 500
-                    })
-                });
-
-                if (!response.ok) {
-                    throw new Error(`API error: ${response.status}`);
-                }
-
-                const data = await response.json();
-                return data.choices[0].message.content;
-            } catch (error) {
-                console.error('Groq API error:', error);
-                return "I apologize, but I'm having trouble connecting right now. Please try again in a moment!";
-            }
-        }
-
         async function handleSend() {
             const message = textInput.value.trim();
             if (!message) return;
 
-            // Add user message
             addMessage('user', message);
             textInput.value = '';
 
-            // Show loading
             addLoadingMessage();
 
-            // Get AI response
-            const response = await callGroqAPI(message);
-            
-            // Remove loading and add response
-            removeLoadingMessage();
-            addMessage('bot', response);
+            setTimeout(() => {
+                const response = getSmartResponse(message);
+                removeLoadingMessage();
+                addMessage('bot', response);
 
-            // Speak response
-            if (voiceEnabled) {
-                speak(response);
-            }
+                if (voiceEnabled) {
+                    speak(response);
+                }
+            }, 800);
         }
 
         function speak(text) {
