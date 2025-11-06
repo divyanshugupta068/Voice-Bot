@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Divyanshu Gupta - AI Voice Bot</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @keyframes pulse-ring {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(1.5); opacity: 0; }
+        }
+        .pulse-ring {
+            animation: pulse-ring 1.5s infinite;
+        }
+        .message-enter {
+            animation: slideIn 0.3s ease-out;
+        }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen">
+    <div id="app" class="flex flex-col h-screen max-w-6xl mx-auto">
+        <!-- Header -->
+        <div class="bg-white shadow-lg p-6 flex items-center justify-between">
+            <div>
+                <h1 class="text-3xl font-bold text-gray-800">Divyanshu Gupta</h1>
+                <p class="text-sm text-gray-600">Data Scientist | AI/ML Engineer | VIT Bhopal</p>
+                <div class="flex gap-3 mt-2">
+                    <a href="https://github.com/divyanshugupta068" target="_blank" class="text-xs text-blue-600 hover:underline">GitHub</a>
+                    <a href="https://linkedin.com/in/divyanshugupta068" target="_blank" class="text-xs text-blue-600 hover:underline">LinkedIn</a>
+                    <span class="text-xs text-gray-500">divyanshugupta068@gmail.com</span>
+                </div>
+            </div>
+            <div class="flex gap-2">
+                <button id="voiceToggle" class="p-3 rounded-full bg-green-500 text-white hover:bg-green-600 transition-all shadow-lg">
+                    <svg id="voiceIcon" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Messages Container -->
+        <div id="messages" class="flex-1 overflow-y-auto p-6 space-y-4">
+            <!-- Messages will be added here -->
+        </div>
+
+        <!-- Input Area -->
+        <div class="bg-white border-t shadow-lg p-4">
+            <div class="flex items-center space-x-3 max-w-4xl mx-auto">
+                <button id="micButton" class="relative p-4 rounded-full bg-blue-500 text-white hover:bg-blue-600 transition-all shadow-lg">
+                    <svg id="micIcon" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path>
+                    </svg>
+                    <div id="pulseRing" class="hidden absolute inset-0 rounded-full bg-red-500 pulse-ring"></div>
+                </button>
+                <input 
+                    id="textInput" 
+                    type="text" 
+                    placeholder="Type your question or click the mic to speak..."
+                    class="flex-1 p-4 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+                <button id="sendButton" class="p-4 rounded-full bg-blue-500 text-white hover:bg-blue-600 transition-all shadow-lg">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+                    </svg>
+                </button>
+            </div>
+            <p id="statusText" class="text-xs text-center text-gray-500 mt-3">
+                Click the mic to speak or type your question
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // Configuration
+        const GROQ_API_KEY = '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'; // Free tier key for demo
+        const GROQ_API_URL = 'https://api.groq.com/openai/v1/chat/completions';
+
+        // Knowledge base about Divyanshu
+        const systemPrompt = `You are Divyanshu Gupta's AI assistant. Answer questions as if you ARE Divyanshu, using first person ("I", "my", etc.).
+
+CORE INFORMATION TO USE:
+
+Life Story:
+"I'm a Data Scientist from Bhopal studying Computer Science at VIT. I got hooked on AI during college and dove deep into ML and Deep Learning. Last summer, I interned at Codiant where I built production AI systems serving thousands of users daily. Now I'm focused on building intelligent applications that solve real problems - from medical document processing to conversational AI recommenders."
+
+#1 Superpower:
+"Turning complex AI concepts into working products. I don't just build models - I ship complete systems with APIs, databases, and frontends that people actually use. I can take something from research paper to production deployment."
+
+Top 3 Growth Areas:
+"First, distributed systems and scaling AI to millions of users. Second, MLOps and production monitoring - I want to master the full lifecycle. Third, leadership and mentoring - I'd love to guide teams building AI products."
+
+Misconception Coworkers Have:
+"People think I'm only technical, but I actually love understanding the business problems behind the code. I'm not just optimizing models - I'm optimizing for user impact and ROI."
+
+How I Push Boundaries:
+"I take on projects slightly beyond my comfort zone. Like building that Neo4j-based recommender system - I'd never touched graph databases before but needed them. I also stay current by implementing new papers and trying cutting-edge tools like LangChain and Groq API within weeks of release."
+
+Education:
+- Bachelor of Technology in Computer Science and Engineering at VIT Bhopal University
+- Graduating October 2026, CGPA: 8.0/10.0
+
+Experience:
+- Data Science and Analytics Intern at Codiant Software Technologies (May-June 2025)
+- Developed production ML models and AI solutions using Python, TensorFlow, PyTorch, FastAPI
+- Built RAG pipelines, Computer Vision systems, and analytics dashboards
+- Created scalable APIs serving 1000+ daily requests with 99.5% uptime
+
+Technical Skills:
+- Languages: Python, Java, C++, SQL, JavaScript, HTML5, CSS3
+- ML/AI: TensorFlow, PyTorch, Scikit-learn, Keras, Deep Learning, Computer Vision, NLP
+- LLM: LangChain, OpenAI API, Groq API, Hugging Face, RAG, FAISS, Vector Databases
+- Web/APIs: FastAPI, Flask, Django, Streamlit, RESTful APIs
+- Databases: MySQL, PostgreSQL, MongoDB, Neo4j, Redis, ChromaDB
+- DevOps: Docker, Git, CI/CD, Linux, Agile
+
+Key Projects:
+1. Agentic AI Recommender System - Used LangChain, Neo4j, Redis with 45% improved accuracy, supporting 500+ concurrent users
+2. MediScan AI Medical Document System - OCR pipeline with 85% accuracy, processing 100+ documents daily
+
+Contact:
+- Email: divyanshugupta068@gmail.com
+- GitHub: github.com/divyanshugupta068
+- LinkedIn: linkedin.com/in/divyanshugupta068
+- Location: Bhopal, Madhya Pradesh
+
+IMPORTANT RULES:
+- Always respond in first person as Divyanshu
+- Be conversational, confident, and authentic
+- Keep responses concise (2-4 sentences unless asked for detail)
+- If asked about something not in your knowledge, say "That's not something I've detailed in my profile, but I'd be happy to discuss it further in an interview!"
+- Sound enthusiastic about AI/ML and problem-solving`;
+
+        // State
+        let isListening = false;
+        let isSpeaking = false;
+        let voiceEnabled = true;
+        let recognition = null;
+        let synthesis = window.speechSynthesis;
+
+        // Elements
+        const messagesContainer = document.getElementById('messages');
+        const textInput = document.getElementById('textInput');
+        const micButton = document.getElementById('micButton');
+        const sendButton = document.getElementById('sendButton');
+        const voiceToggle = document.getElementById('voiceToggle');
+        const statusText = document.getElementById('statusText');
+        const pulseRing = document.getElementById('pulseRing');
+        const micIcon = document.getElementById('micIcon');
+        const voiceIcon = document.getElementById('voiceIcon');
+
+        // Initialize Speech Recognition
+        if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            recognition = new SpeechRecognition();
+            recognition.continuous = false;
+            recognition.interimResults = false;
+            recognition.lang = 'en-US';
+
+            recognition.onresult = (event) => {
+                const transcript = event.results[0][0].transcript;
+                textInput.value = transcript;
+                handleSend();
+            };
+
+            recognition.onend = () => {
+                setListening(false);
+            };
+
+            recognition.onerror = (event) => {
+                console.error('Speech recognition error:', event.error);
+                setListening(false);
+                statusText.textContent = 'Speech recognition error. Please try again.';
+            };
+        }
+
+        // Add welcome message
+        addMessage('bot', "Hi! I'm Divyanshu's AI voice bot. Ask me about my background, skills, projects, or anything else! You can type or use the microphone. 🎤");
+
+        // Event Listeners
+        micButton.addEventListener('click', toggleListening);
+        sendButton.addEventListener('click', () => handleSend());
+        textInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') handleSend();
+        });
+        voiceToggle.addEventListener('click', toggleVoice);
+
+        function addMessage(type, text) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `flex ${type === 'user' ? 'justify-end' : 'justify-start'} message-enter`;
+            
+            const contentDiv = document.createElement('div');
+            contentDiv.className = `max-w-xs md:max-w-md lg:max-w-2xl p-4 rounded-lg ${
+                type === 'user' 
+                    ? 'bg-blue-500 text-white' 
+                    : 'bg-white text-gray-800 shadow-md'
+            }`;
+            contentDiv.textContent = text;
+            
+            messageDiv.appendChild(contentDiv);
+            messagesContainer.appendChild(messageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        function addLoadingMessage() {
+            const messageDiv = document.createElement('div');
+            messageDiv.id = 'loadingMessage';
+            messageDiv.className = 'flex justify-start message-enter';
+            
+            const contentDiv = document.createElement('div');
+            contentDiv.className = 'bg-white text-gray-800 shadow-md p-4 rounded-lg flex items-center space-x-2';
+            contentDiv.innerHTML = `
+                <div class="flex space-x-1">
+                    <div class="w-2 h-2 bg-blue-500 rounded-full animate-bounce"></div>
+                    <div class="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style="animation-delay: 0.1s"></div>
+                    <div class="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
+                </div>
+                <span class="text-sm text-gray-600">Thinking...</span>
+            `;
+            
+            messageDiv.appendChild(contentDiv);
+            messagesContainer.appendChild(messageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        function removeLoadingMessage() {
+            const loading = document.getElementById('loadingMessage');
+            if (loading) loading.remove();
+        }
+
+        async function callGroqAPI(userMessage) {
+            try {
+                const response = await fetch(GROQ_API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${GROQ_API_KEY}`
+                    },
+                    body: JSON.stringify({
+                        model: 'llama-3.1-70b-versatile',
+                        messages: [
+                            { role: 'system', content: systemPrompt },
+                            { role: 'user', content: userMessage }
+                        ],
+                        temperature: 0.7,
+                        max_tokens: 500
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`API error: ${response.status}`);
+                }
+
+                const data = await response.json();
+                return data.choices[0].message.content;
+            } catch (error) {
+                console.error('Groq API error:', error);
+                return "I apologize, but I'm having trouble connecting right now. Please try again in a moment!";
+            }
+        }
+
+        async function handleSend() {
+            const message = textInput.value.trim();
+            if (!message) return;
+
+            // Add user message
+            addMessage('user', message);
+            textInput.value = '';
+
+            // Show loading
+            addLoadingMessage();
+
+            // Get AI response
+            const response = await callGroqAPI(message);
+            
+            // Remove loading and add response
+            removeLoadingMessage();
+            addMessage('bot', response);
+
+            // Speak response
+            if (voiceEnabled) {
+                speak(response);
+            }
+        }
+
+        function speak(text) {
+            if (!voiceEnabled || isSpeaking) return;
+
+            synthesis.cancel();
+            
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.rate = 1.0;
+            utterance.pitch = 1.0;
+            utterance.volume = 1.0;
+
+            utterance.onstart = () => {
+                isSpeaking = true;
+                statusText.textContent = '🔊 Speaking...';
+            };
+
+            utterance.onend = () => {
+                isSpeaking = false;
+                statusText.textContent = 'Click the mic to speak or type your question';
+            };
+
+            utterance.onerror = () => {
+                isSpeaking = false;
+                statusText.textContent = 'Click the mic to speak or type your question';
+            };
+
+            synthesis.speak(utterance);
+        }
+
+        function toggleListening() {
+            if (!recognition) {
+                alert('Speech recognition is not supported in your browser. Please use Chrome, Edge, or Safari.');
+                return;
+            }
+
+            if (isListening) {
+                recognition.stop();
+            } else {
+                recognition.start();
+            }
+            setListening(!isListening);
+        }
+
+        function setListening(state) {
+            isListening = state;
+            if (state) {
+                micButton.classList.add('bg-red-500');
+                micButton.classList.remove('bg-blue-500');
+                pulseRing.classList.remove('hidden');
+                statusText.textContent = '🎤 Listening... Speak now!';
+            } else {
+                micButton.classList.remove('bg-red-500');
+                micButton.classList.add('bg-blue-500');
+                pulseRing.classList.add('hidden');
+                statusText.textContent = 'Click the mic to speak or type your question';
+            }
+        }
+
+        function toggleVoice() {
+            voiceEnabled = !voiceEnabled;
+            if (!voiceEnabled && isSpeaking) {
+                synthesis.cancel();
+                isSpeaking = false;
+            }
+            
+            voiceToggle.classList.toggle('bg-green-500');
+            voiceToggle.classList.toggle('bg-gray-400');
+            
+            if (voiceEnabled) {
+                voiceIcon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path>';
+            } else {
+                voiceIcon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2"></path>';
+            }
+        }
+    </script>
+</body>
+</html>
